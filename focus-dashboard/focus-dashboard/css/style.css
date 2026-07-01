@@ -1,0 +1,394 @@
+/* ==========================================================
+   Daily Focus Dashboard — styles
+   ========================================================== */
+
+:root {
+  --bg-start: #6a5ff2;
+  --bg-end: #a06be0;
+  --card-bg: #ffffff;
+  --card-text: #1f2333;
+  --muted-text: #6b7080;
+  --accent: #5850ec;
+  --accent-hover: #4740d4;
+  --border: #e6e6ef;
+  --danger: #ef5c6e;
+  --danger-hover: #d9495a;
+  --input-bg: #f6f6fb;
+  --shadow: 0 12px 30px rgba(35, 25, 90, 0.18);
+  --radius: 16px;
+}
+
+[data-theme="dark"] {
+  --bg-start: #14152b;
+  --bg-end: #2a1f4d;
+  --card-bg: #1e2038;
+  --card-text: #eceafb;
+  --muted-text: #9a9cc0;
+  --accent: #7c72ff;
+  --accent-hover: #948bff;
+  --border: #34365a;
+  --danger: #ff6b7a;
+  --danger-hover: #ff8590;
+  --input-bg: #262845;
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+  color: var(--card-text);
+  padding: 40px 20px 80px;
+  transition: background 0.4s ease;
+}
+
+.dashboard {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 30px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.card h2 {
+  margin: 0 0 18px;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+/* ---------- Greeting card ---------- */
+.card--greeting { text-align: center; }
+
+.clock {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.date {
+  color: var(--muted-text);
+  margin-top: 4px;
+  font-size: 0.95rem;
+}
+
+.greeting {
+  margin: 14px 0 4px;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.name-edit {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.name-edit input {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--card-text);
+  font-size: 0.9rem;
+  min-width: 200px;
+}
+
+/* ---------- Layout row ---------- */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 700px) {
+  .row { grid-template-columns: 1fr; }
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn--primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn--primary:hover { background: var(--accent-hover); }
+
+.btn--muted {
+  background: var(--input-bg);
+  color: var(--card-text);
+  border: 1px solid var(--border);
+}
+.btn--muted:hover { background: var(--border); }
+
+.btn--ghost {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+.btn--ghost:hover { background: var(--accent); color: #fff; }
+
+.btn--danger {
+  background: var(--danger);
+  color: #fff;
+}
+.btn--danger:hover { background: var(--danger-hover); }
+
+/* ---------- Focus timer ---------- */
+.card--timer { text-align: center; }
+
+.timer-display {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 8px 0 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.timer-settings {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.timer-settings label {
+  font-size: 0.8rem;
+  color: var(--muted-text);
+}
+
+.timer-settings__row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.timer-settings__row input {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--card-text);
+  text-align: center;
+}
+
+/* ---------- Tasks ---------- */
+.task-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.task-form input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--card-text);
+  transition: border-color 0.2s ease;
+}
+
+.task-form input.duplicate-warning {
+  border-color: var(--danger);
+}
+.task-form input.duplicate-warning::placeholder {
+  color: var(--danger);
+}
+
+.task-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: var(--muted-text);
+}
+
+.task-toolbar select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--card-text);
+}
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--input-bg);
+}
+
+.task-item.done .task-text {
+  text-decoration: line-through;
+  color: var(--muted-text);
+}
+
+.task-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.task-text {
+  flex: 1;
+  word-break: break-word;
+  outline: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.task-text[contenteditable="true"]:focus {
+  background: var(--card-bg);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.task-item .icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 4px 6px;
+  border-radius: 6px;
+  color: var(--muted-text);
+}
+.task-item .icon-btn:hover { background: var(--border); }
+
+.task-item .delete-btn {
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.task-item .delete-btn:hover { background: var(--danger-hover); }
+
+.empty-state {
+  color: var(--muted-text);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 10px 0;
+  display: none;
+}
+
+/* ---------- Quick links ---------- */
+.link-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.link-form input {
+  flex: 1;
+  min-width: 140px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--card-text);
+}
+
+.link-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.link-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+}
+.link-chip:hover { background: var(--accent-hover); }
+
+.link-chip .remove-link {
+  background: rgba(255,255,255,0.25);
+  border: none;
+  color: #fff;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.link-chip .remove-link:hover { background: rgba(255,255,255,0.45); }
+
+/* ---------- Theme toggle ---------- */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--card-bg);
+  color: var(--card-text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  z-index: 10;
+}
+.theme-toggle:hover { transform: scale(1.05); }
