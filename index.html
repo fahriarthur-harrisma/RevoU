@@ -1,79 +1,560 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id" class="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Focus Dashboard</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Focus Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Custom Scrollbar for sleek aesthetic */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(30, 41, 59, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.3);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(99, 102, 241, 0.6);
+    }
+  </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-slate-100 min-h-screen flex flex-col antialiased">
 
-  <div class="dashboard">
+  <!-- Header & Greeting Banner -->
+  <header class="w-full max-w-6xl mx-auto px-4 pt-8 pb-4">
+    <div class="bg-slate-900/60 border border-slate-800/80 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-2xl flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      
+      <!-- Clock, Date, & Welcome Greeting -->
+      <div class="space-y-2">
+        <div class="flex items-center gap-4">
+          <div id="clock" class="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">00:00:00</div>
+          <div class="h-8 w-[1px] bg-slate-800"></div>
+          <div id="date" class="text-sm font-medium text-slate-400">Memuat tanggal...</div>
+        </div>
+        
+        <div class="flex flex-wrap items-baseline gap-2 pt-1">
+          <h1 id="greeting" class="text-2xl md:text-3xl font-extrabold tracking-tight">Halo,</h1>
+          <span id="displayName" class="text-2xl md:text-3xl font-extrabold tracking-tight text-indigo-400">Teman</span>
+        </div>
+      </div>
 
-    <!-- Greeting -->
-    <section class="card card--greeting">
-      <div class="clock" id="clock">--:--:--</div>
-      <div class="date" id="date">Loading date…</div>
-      <h1 class="greeting" id="greeting">Hello</h1>
+      <!-- Name Customizer -->
+      <div class="flex items-center gap-2 bg-slate-950/40 p-1.5 rounded-2xl border border-slate-800/80 w-full md:w-auto max-w-md">
+        <input type="text" id="nameInput" placeholder="Siapa nama Anda?" maxlength="20" class="bg-transparent text-sm font-medium text-slate-200 placeholder-slate-500 focus:outline-none px-3 py-2 w-full">
+        <button id="saveNameBtn" class="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all duration-200 shrink-0 shadow-lg shadow-indigo-600/20 hover:shadow-indigo-500/30 flex items-center gap-1.5">
+          <i data-lucide="check" class="w-3.5 h-3.5"></i> Simpan
+        </button>
+      </div>
 
-      <div class="name-edit">
-        <input type="text" id="nameInput" placeholder="What should we call you?" maxlength="20">
-        <button id="saveNameBtn">Save</button>
+    </div>
+  </header>
+
+  <!-- Main Content Grid -->
+  <main class="w-full max-w-6xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-12 gap-6 flex-grow">
+    
+    <!-- LEFT SIDE: Focus Timer (Dashboard Grid 5/12) -->
+    <section class="md:col-span-5 bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-xl flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-2">
+            <div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
+              <i data-lucide="timer" class="w-5 h-5"></i>
+            </div>
+            <h2 class="text-lg font-bold text-slate-200">Focus Timer</h2>
+          </div>
+          <span id="timerStatus" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700/50">Santai</span>
+        </div>
+
+        <!-- Timer Display Area -->
+        <div class="relative py-8 flex flex-col items-center justify-center">
+          <div id="timerDisplay" class="text-6xl md:text-7xl font-black font-mono tracking-wider text-slate-100 drop-shadow-[0_0_15px_rgba(99,102,241,0.2)]">25:00</div>
+          <p class="text-xs text-slate-500 mt-2">Tetap fokus dan selesaikan tugas Anda</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="grid grid-cols-3 gap-3 my-6">
+          <button id="startBtn" class="bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold py-3 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 text-sm shadow-lg shadow-emerald-900/10">
+            <i data-lucide="play" class="w-4 h-4 fill-current"></i> Start
+          </button>
+          <button id="stopBtn" class="bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-bold py-3 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 text-sm shadow-lg shadow-rose-900/10">
+            <i data-lucide="pause" class="w-4 h-4 fill-current"></i> Stop
+          </button>
+          <button id="resetBtn" class="bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-200 font-bold py-3 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 text-sm border border-slate-700">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Settings Panel -->
+      <div class="border-t border-slate-800/80 pt-6">
+        <label for="durationInput" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Durasi Sesi (Menit)</label>
+        <div class="flex items-center gap-2">
+          <div class="relative w-full">
+            <input type="number" id="durationInput" min="1" max="180" value="25" class="w-full bg-slate-950/60 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none rounded-2xl py-3 px-4 text-sm font-semibold transition-all">
+            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-500">Min</span>
+          </div>
+          <button id="setDurationBtn" class="bg-indigo-600/10 hover:bg-indigo-600/20 active:bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 font-bold px-5 py-3 rounded-2xl transition-all text-sm shrink-0">
+            Setel
+          </button>
+        </div>
       </div>
     </section>
 
-    <div class="row">
+    <!-- RIGHT SIDE: Tasks & Links Column (Dashboard Grid 7/12) -->
+    <div class="md:col-span-7 flex flex-col gap-6">
 
-      <!-- Focus Timer -->
-      <section class="card card--timer">
-        <h2>Focus Timer</h2>
-        <div class="timer-display" id="timerDisplay">25:00</div>
-
-        <div class="timer-controls">
-          <button id="startBtn" class="btn btn--primary">Start</button>
-          <button id="stopBtn" class="btn btn--muted">Stop</button>
-          <button id="resetBtn" class="btn btn--muted">Reset</button>
+      <!-- TASK SECTION -->
+      <section class="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-xl flex-grow flex flex-col h-[350px]">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
+              <i data-lucide="check-square" class="w-5 h-5"></i>
+            </div>
+            <h2 class="text-lg font-bold text-slate-200">Daftar Tugas</h2>
+          </div>
+          <span id="taskCounter" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700/50">0 Selesai</span>
         </div>
 
-        <div class="timer-settings">
-          <label for="durationInput">Session length (minutes)</label>
-          <div class="timer-settings__row">
-            <input type="number" id="durationInput" min="1" max="180" value="25">
-            <button id="setDurationBtn" class="btn btn--ghost">Set</button>
+        <!-- Add Task Form -->
+        <form id="taskForm" class="flex gap-2 mb-4">
+          <input type="text" id="taskInput" placeholder="Tambahkan tugas baru..." maxlength="80" autocomplete="off" class="w-full bg-slate-950/60 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none rounded-2xl py-3 px-4 text-sm transition-all">
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-bold px-6 rounded-2xl transition-all duration-200 text-sm flex items-center justify-center gap-1 shrink-0">
+            <i data-lucide="plus" class="w-4 h-4"></i> Tambah
+          </button>
+        </form>
+
+        <!-- Tasks Scroll Container -->
+        <div class="flex-grow overflow-y-auto pr-1">
+          <ul id="taskList" class="space-y-2"></ul>
+          <!-- Empty State -->
+          <div id="taskEmptyState" class="flex flex-col items-center justify-center py-8 text-center">
+            <div class="p-3 bg-slate-800/50 rounded-full text-slate-500 mb-2">
+              <i data-lucide="clipboard" class="w-6 h-6"></i>
+            </div>
+            <p class="text-sm font-medium text-slate-400">Belum ada tugas.</p>
+            <p class="text-xs text-slate-500">Mulai hari Anda dengan menulis tugas pertama di atas.</p>
           </div>
         </div>
       </section>
 
-      <!-- Tasks -->
-      <section class="card card--tasks">
-        <h2>Tasks</h2>
+      <!-- QUICK LINKS SECTION -->
+      <section class="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-xl">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
+            <i data-lucide="link" class="w-5 h-5"></i>
+          </div>
+          <h2 class="text-lg font-bold text-slate-200">Tautan Cepat (Bookmark)</h2>
+        </div>
 
-        <form id="taskForm" class="task-form">
-          <input type="text" id="taskInput" placeholder="Add a new task…" maxlength="80" autocomplete="off">
-          <button type="submit" class="btn btn--primary">Add</button>
+        <!-- Add Link Form -->
+        <form id="linkForm" class="grid grid-cols-1 sm:grid-cols-12 gap-2 mb-6">
+          <div class="sm:col-span-5">
+            <input type="text" id="linkNameInput" placeholder="Nama link (misal: Google)" maxlength="20" class="w-full bg-slate-950/60 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none rounded-2xl py-3 px-4 text-sm transition-all">
+          </div>
+          <div class="sm:col-span-5">
+            <input type="url" id="linkUrlInput" placeholder="URL (https://...)" class="w-full bg-slate-950/60 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none rounded-2xl py-3 px-4 text-sm transition-all">
+          </div>
+          <button type="submit" class="sm:col-span-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-bold rounded-2xl transition-all duration-200 text-sm flex items-center justify-center gap-1.5 py-3">
+            <i data-lucide="plus" class="w-4 h-4"></i> Tambah
+          </button>
         </form>
 
-        <ul class="task-list" id="taskList"></ul>
-        <p class="empty-state" id="taskEmptyState">No tasks yet — add your first one above.</p>
+        <!-- Link Grid -->
+        <div id="linkList" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
       </section>
 
     </div>
+  </main>
 
-    <!-- Quick Links -->
-    <section class="card card--links">
-      <h2>Quick Links</h2>
-
-      <form id="linkForm" class="link-form">
-        <input type="text" id="linkNameInput" placeholder="Link name" maxlength="20">
-        <input type="url" id="linkUrlInput" placeholder="URL (e.g. https://example.com)">
-        <button type="submit" class="btn btn--primary">Add Link</button>
-      </form>
-
-      <div class="link-list" id="linkList"></div>
-    </section>
-
+  <!-- Sound Toast Container for Alert -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 max-w-sm bg-indigo-650 border border-indigo-500 text-white rounded-2xl p-4 shadow-2xl flex items-center gap-3">
+    <div class="p-2.5 bg-indigo-700 rounded-xl">
+      <i data-lucide="alarm-smoke" class="w-6 h-6 text-indigo-200 animate-bounce"></i>
+    </div>
+    <div>
+      <h4 class="font-extrabold text-sm text-indigo-100">Waktu Fokus Selesai!</h4>
+      <p class="text-xs text-indigo-200">Istirahatlah sejenak untuk meregangkan badan.</p>
+    </div>
+    <button onclick="dismissToast()" class="text-indigo-200 hover:text-white ml-2">
+      <i data-lucide="x" class="w-4 h-4"></i>
+    </button>
   </div>
 
-  <script src="js/script.js"></script>
+  <!-- Audio Beep / Bell System using Web Audio API -->
+  <script>
+    // Synthesis audio helper so no external file load is required
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Ring sound combining two frequencies
+        const playTone = (freq, time, length) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, time);
+          
+          gain.gain.setValueAtTime(0, time);
+          gain.gain.linearRampToValueAtTime(0.4, time + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + length);
+          
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.start(time);
+          osc.stop(time + length);
+        };
+
+        const now = ctx.currentTime;
+        // Playing nice dual chime sound
+        playTone(587.33, now, 0.6); // D5
+        playTone(880, now + 0.1, 0.8); // A5
+        playTone(1174.66, now + 0.3, 1.2); // D6
+      } catch (err) {
+        console.log("Audio Context blocked or not supported:", err);
+      }
+    }
+  </script>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Data State (Load from Local Storage or set defaults)
+    let state = {
+      userName: localStorage.getItem('focus_username') || 'Teman',
+      tasks: JSON.parse(localStorage.getItem('focus_tasks')) || [],
+      links: JSON.parse(localStorage.getItem('focus_links')) || [
+        { id: 1, name: 'Google', url: 'https://google.com' },
+        { id: 2, name: 'YouTube', url: 'https://youtube.com' },
+        { id: 3, name: 'GitHub', url: 'https://github.com' }
+      ]
+    };
+
+    // DOM Elements
+    const clockEl = document.getElementById('clock');
+    const dateEl = document.getElementById('date');
+    const greetingEl = document.getElementById('greeting');
+    const displayNameEl = document.getElementById('displayName');
+    const nameInput = document.getElementById('nameInput');
+    const saveNameBtn = document.getElementById('saveNameBtn');
+
+    // 1. CLOCK & REALTIME DATE
+    function updateClock() {
+      const now = new Date();
+      let hours = String(now.getHours()).padStart(2, '0');
+      let minutes = String(now.getMinutes()).padStart(2, '0');
+      let seconds = String(now.getSeconds()).padStart(2, '0');
+      
+      clockEl.textContent = `${hours}:${minutes}:${seconds}`;
+
+      // Dynamically determine appropriate greeting based on hours
+      const hour = now.getHours();
+      let greetingText = "Halo,";
+      if (hour >= 5 && hour < 11) {
+        greetingText = "Selamat Pagi,";
+      } else if (hour >= 11 && hour < 15) {
+        greetingText = "Selamat Siang,";
+      } else if (hour >= 15 && hour < 18) {
+        greetingText = "Selamat Sore,";
+      } else {
+        greetingText = "Selamat Malam,";
+      }
+      greetingEl.textContent = greetingText;
+
+      // Update date formatted elegantly
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      dateEl.textContent = now.toLocaleDateString('id-ID', options);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 2. NAME CUSTOMIZATION
+    displayNameEl.textContent = state.userName;
+    nameInput.value = state.userName === 'Teman' ? '' : state.userName;
+
+    saveNameBtn.addEventListener('click', () => {
+      let val = nameInput.value.trim();
+      if (!val) val = 'Teman';
+      state.userName = val;
+      localStorage.setItem('focus_username', val);
+      displayNameEl.textContent = val;
+    });
+
+    // 3. FOCUS TIMER (POMODORO)
+    let timerInterval = null;
+    let secondsRemaining = 25 * 60;
+    let originalDuration = 25; // in minutes
+    let isTimerRunning = false;
+
+    const timerDisplay = document.getElementById('timerDisplay');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const durationInput = document.getElementById('durationInput');
+    const setDurationBtn = document.getElementById('setDurationBtn');
+    const timerStatus = document.getElementById('timerStatus');
+
+    function updateTimerUI() {
+      const min = Math.floor(secondsRemaining / 60);
+      const sec = secondsRemaining % 60;
+      timerDisplay.textContent = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (isTimerRunning) return;
+      isTimerRunning = true;
+      timerStatus.textContent = "Fokus";
+      timerStatus.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 animate-pulse";
+      
+      timerInterval = setInterval(() => {
+        if (secondsRemaining > 0) {
+          secondsRemaining--;
+          updateTimerUI();
+        } else {
+          // Timer finished
+          clearInterval(timerInterval);
+          isTimerRunning = false;
+          timerStatus.textContent = "Selesai";
+          timerStatus.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+          playBeep();
+          showToast();
+          resetTimer();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (!isTimerRunning) return;
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      timerStatus.textContent = "Jeda";
+      timerStatus.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30";
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      secondsRemaining = originalDuration * 60;
+      timerStatus.textContent = "Santai";
+      timerStatus.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700/50";
+      updateTimerUI();
+    }
+
+    setDurationBtn.addEventListener('click', () => {
+      let val = parseInt(durationInput.value);
+      if (isNaN(val) || val < 1) val = 1;
+      if (val > 180) val = 180;
+      
+      durationInput.value = val;
+      originalDuration = val;
+      resetTimer();
+    });
+
+    startBtn.addEventListener('click', startTimer);
+    stopBtn.addEventListener('click', stopTimer);
+    resetBtn.addEventListener('click', resetTimer);
+    updateTimerUI();
+
+    // Toast Handling
+    const toast = document.getElementById('toastNotification');
+    function showToast() {
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(dismissToast, 10000); // Auto dismiss after 10s
+    }
+    function dismissToast() {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-20', 'opacity-0');
+    }
+
+    // 4. TASKS MANAGEMENT (TODO LIST)
+    const taskForm = document.getElementById('taskForm');
+    const taskInput = document.getElementById('taskInput');
+    const taskList = document.getElementById('taskList');
+    const taskEmptyState = document.getElementById('taskEmptyState');
+    const taskCounter = document.getElementById('taskCounter');
+
+    function saveTasks() {
+      localStorage.setItem('focus_tasks', JSON.stringify(state.tasks));
+      renderTasks();
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = '';
+      
+      if (state.tasks.length === 0) {
+        taskEmptyState.classList.remove('hidden');
+        taskCounter.textContent = '0 Selesai';
+        return;
+      }
+      
+      taskEmptyState.classList.add('hidden');
+      let completedCount = 0;
+
+      state.tasks.forEach(task => {
+        if (task.completed) completedCount++;
+
+        const li = document.createElement('li');
+        li.className = `flex items-center justify-between p-3.5 bg-slate-950/40 border rounded-2xl transition-all duration-200 ${
+          task.completed ? 'border-emerald-500/20 bg-emerald-950/5' : 'border-slate-800/80 hover:border-slate-700'
+        }`;
+
+        li.innerHTML = `
+          <div class="flex items-center gap-3 flex-grow cursor-pointer" onclick="toggleTask(${task.id})">
+            <div class="w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+              task.completed 
+                ? 'border-emerald-500 bg-emerald-500 text-white' 
+                : 'border-slate-600 hover:border-indigo-400'
+            }">
+              ${task.completed ? '<i data-lucide="check" class="w-3.5 h-3.5 stroke-[3px]"></i>' : ''}
+            </div>
+            <span class="text-sm font-medium select-none break-all transition-all ${
+              task.completed ? 'line-through text-slate-500' : 'text-slate-200'
+            }">${task.text}</span>
+          </div>
+          <button onclick="deleteTask(${task.id})" class="text-slate-500 hover:text-rose-400 p-1 rounded-lg hover:bg-slate-800 transition-colors ml-2">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        `;
+        taskList.appendChild(li);
+      });
+
+      taskCounter.textContent = `${completedCount} dari ${state.tasks.length} Selesai`;
+      lucide.createIcons();
+    }
+
+    taskForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = taskInput.value.trim();
+      if (!val) return;
+
+      const newTask = {
+        id: Date.now(),
+        text: val,
+        completed: false
+      };
+
+      state.tasks.push(newTask);
+      taskInput.value = '';
+      saveTasks();
+    });
+
+    window.toggleTask = function(id) {
+      state.tasks = state.tasks.map(t => {
+        if (t.id === id) {
+          return { ...t, completed: !t.completed };
+        }
+        return t;
+      });
+      saveTasks();
+    };
+
+    window.deleteTask = function(id) {
+      state.tasks = state.tasks.filter(t => t.id !== id);
+      saveTasks();
+    };
+
+    renderTasks();
+
+    // 5. QUICK LINKS MANAGEMENT
+    const linkForm = document.getElementById('linkForm');
+    const linkNameInput = document.getElementById('linkNameInput');
+    const linkUrlInput = document.getElementById('linkUrlInput');
+    const linkList = document.getElementById('linkList');
+
+    function saveLinks() {
+      localStorage.setItem('focus_links', JSON.stringify(state.links));
+      renderLinks();
+    }
+
+    function renderLinks() {
+      linkList.innerHTML = '';
+      
+      state.links.forEach(link => {
+        // Ensure proper link prefix
+        let validUrl = link.url;
+        if (!/^https?:\/\//i.test(validUrl)) {
+          validUrl = 'https://' + validUrl;
+        }
+
+        const div = document.createElement('div');
+        div.className = "group relative flex items-center justify-between p-3 bg-slate-950/60 hover:bg-indigo-950/10 border border-slate-800/80 hover:border-indigo-500/40 rounded-2xl transition-all duration-300";
+        div.innerHTML = `
+          <a href="${validUrl}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 flex-grow overflow-hidden pr-2">
+            <div class="p-1.5 bg-slate-850 rounded-lg group-hover:bg-indigo-600/10 group-hover:text-indigo-400 text-slate-400 transition-colors shrink-0">
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </div>
+            <span class="text-xs font-semibold text-slate-300 group-hover:text-white truncate transition-colors">${link.name}</span>
+          </a>
+          <button onclick="deleteLink(${link.id})" class="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-rose-400 p-1 rounded-lg hover:bg-slate-800 transition-all duration-200">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        `;
+        linkList.appendChild(div);
+      });
+      lucide.createIcons();
+    }
+
+    linkForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = linkNameInput.value.trim();
+      let url = linkUrlInput.value.trim();
+
+      if (!name || !url) return;
+
+      // Basic URL verification check
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
+
+      const newLink = {
+        id: Date.now(),
+        name: name,
+        url: url
+      };
+
+      state.links.push(newLink);
+      linkNameInput.value = '';
+      linkUrlInput.value = '';
+      saveLinks();
+    });
+
+    window.deleteLink = function(id) {
+      state.links = state.links.filter(l => l.id !== id);
+      saveLinks();
+    };
+
+    renderLinks();
+  </script>
 </body>
 </html>
