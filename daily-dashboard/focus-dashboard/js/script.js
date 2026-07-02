@@ -6,25 +6,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------------------------------------------------------
-     THEME (Light / Dark mode)
-  --------------------------------------------------------- */
-  const themeToggle = document.getElementById('themeToggle');
-  const root = document.documentElement;
-
-  function applyTheme(theme) {
-    root.setAttribute('data-theme', theme);
-    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
-    localStorage.setItem('dashboard-theme', theme);
-  }
-
-  applyTheme(localStorage.getItem('dashboard-theme') || 'light');
-
-  themeToggle.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    applyTheme(current);
-  });
-
-  /* ---------------------------------------------------------
      GREETING: clock, date, time-based greeting, custom name
   --------------------------------------------------------- */
   const clockEl = document.getElementById('clock');
@@ -78,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(tickClock, 1000);
 
   /* ---------------------------------------------------------
-     FOCUS TIMER (Pomodoro, adjustable length)
+     FOCUS TIMER (25-minute Pomodoro, adjustable length)
   --------------------------------------------------------- */
   const timerDisplay = document.getElementById('timerDisplay');
   const startBtn = document.getElementById('startBtn');
@@ -114,9 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(timerInterval);
         timerInterval = null;
         timerDisplay.textContent = 'Done!';
-        if (Notification && Notification.permission === 'granted') {
-          new Notification('Focus session complete!');
-        }
       }
     }, 1000);
   }
@@ -147,43 +125,28 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTimer();
 
   /* ---------------------------------------------------------
-     TASKS: add, edit, complete, delete, sort, persist
+     TASKS: add, edit, complete, delete, persist
+     (also prevents duplicate task text)
   --------------------------------------------------------- */
   const taskForm = document.getElementById('taskForm');
   const taskInput = document.getElementById('taskInput');
   const taskList = document.getElementById('taskList');
   const taskEmptyState = document.getElementById('taskEmptyState');
-  const sortSelect = document.getElementById('sortSelect');
 
   const TASKS_KEY = 'dashboard-tasks';
   let tasks = JSON.parse(localStorage.getItem(TASKS_KEY) || '[]');
-  let sortMode = localStorage.getItem('dashboard-task-sort') || 'created';
-  sortSelect.value = sortMode;
 
   function saveTasks() {
     localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
   }
 
-  function getSortedTasks() {
-    const copy = [...tasks];
-    if (sortMode === 'alpha') {
-      copy.sort((a, b) => a.text.localeCompare(b.text));
-    } else if (sortMode === 'status') {
-      copy.sort((a, b) => Number(a.done) - Number(b.done));
-    }
-    // 'created' keeps insertion order (array order)
-    return copy;
-  }
-
   function renderTasks() {
     taskList.innerHTML = '';
-    const sorted = getSortedTasks();
     taskEmptyState.style.display = tasks.length === 0 ? 'block' : 'none';
 
-    sorted.forEach(task => {
+    tasks.forEach(task => {
       const li = document.createElement('li');
       li.className = 'task-item' + (task.done ? ' done' : '');
-      li.dataset.id = task.id;
 
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -253,12 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTasks();
     taskInput.value = '';
     taskInput.focus();
-  });
-
-  sortSelect.addEventListener('change', () => {
-    sortMode = sortSelect.value;
-    localStorage.setItem('dashboard-task-sort', sortMode);
-    renderTasks();
   });
 
   renderTasks();

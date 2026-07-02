@@ -8,8 +8,6 @@
 </head>
 <body>
 
-  <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle light / dark mode">🌙</button>
-
   <div class="dashboard">
 
     <!-- Greeting -->
@@ -54,15 +52,6 @@
           <input type="text" id="taskInput" placeholder="Add a new task…" maxlength="80" autocomplete="off">
           <button type="submit" class="btn btn--primary">Add</button>
         </form>
-
-        <div class="task-toolbar">
-          <label for="sortSelect">Sort by</label>
-          <select id="sortSelect">
-            <option value="created">Date added</option>
-            <option value="alpha">A → Z</option>
-            <option value="status">Status</option>
-          </select>
-        </div>
 
         <ul class="task-list" id="taskList"></ul>
         <p class="empty-state" id="taskEmptyState">No tasks yet — add your first one above.</p>

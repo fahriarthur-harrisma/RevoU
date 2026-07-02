@@ -18,21 +18,6 @@
   --radius: 16px;
 }
 
-[data-theme="dark"] {
-  --bg-start: #14152b;
-  --bg-end: #2a1f4d;
-  --card-bg: #1e2038;
-  --card-text: #eceafb;
-  --muted-text: #9a9cc0;
-  --accent: #7c72ff;
-  --accent-hover: #948bff;
-  --border: #34365a;
-  --danger: #ff6b7a;
-  --danger-hover: #ff8590;
-  --input-bg: #262845;
-  --shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-}
-
 * { box-sizing: border-box; }
 
 body {
@@ -42,7 +27,6 @@ body {
   background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
   color: var(--card-text);
   padding: 40px 20px 80px;
-  transition: background 0.4s ease;
 }
 
 .dashboard {
@@ -58,7 +42,6 @@ body {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 28px 30px;
-  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .card h2 {
@@ -150,12 +133,6 @@ body {
 }
 .btn--ghost:hover { background: var(--accent); color: #fff; }
 
-.btn--danger {
-  background: var(--danger);
-  color: #fff;
-}
-.btn--danger:hover { background: var(--danger-hover); }
-
 /* ---------- Focus timer ---------- */
 .card--timer { text-align: center; }
 
@@ -225,23 +202,6 @@ body {
   color: var(--danger);
 }
 
-.task-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  font-size: 0.85rem;
-  color: var(--muted-text);
-}
-
-.task-toolbar select {
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--input-bg);
-  color: var(--card-text);
-}
-
 .task-list {
   list-style: none;
   margin: 0;
@@ -287,17 +247,6 @@ body {
   background: var(--card-bg);
   box-shadow: 0 0 0 2px var(--accent);
 }
-
-.task-item .icon-btn {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 0.95rem;
-  padding: 4px 6px;
-  border-radius: 6px;
-  color: var(--muted-text);
-}
-.task-item .icon-btn:hover { background: var(--border); }
 
 .task-item .delete-btn {
   background: var(--danger);
@@ -360,7 +309,7 @@ body {
 .link-chip:hover { background: var(--accent-hover); }
 
 .link-chip .remove-link {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255, 255, 255, 0.25);
   border: none;
   color: #fff;
   width: 20px;
@@ -373,22 +322,4 @@ body {
   align-items: center;
   justify-content: center;
 }
-.link-chip .remove-link:hover { background: rgba(255,255,255,0.45); }
-
-/* ---------- Theme toggle ---------- */
-.theme-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: none;
-  background: var(--card-bg);
-  color: var(--card-text);
-  font-size: 1.2rem;
-  cursor: pointer;
-  box-shadow: var(--shadow);
-  z-index: 10;
-}
-.theme-toggle:hover { transform: scale(1.05); }
+.link-chip .remove-link:hover { background: rgba(255, 255, 255, 0.45); }
